@@ -90,6 +90,7 @@ function rpg_class_click(event)
 		rpg_set_class(player, event.element.name)
 		player.gui.center.picker.destroy()
 		rpg_add_gui(event)
+		tag_refresh(player) --refreshes tag of a player
 	end
 	if event.element.name == "pickerclose" then
 		if global.rpg_exp[player.name].class == "Engineer" then
@@ -97,6 +98,7 @@ function rpg_class_click(event)
 			rpg_add_gui(event)
 		end
 		rpg_add_gui(event)
+		tag_refresh(player) --refreshes tag of a player
 		player.gui.center.picker.destroy()
 	end
 end
@@ -296,12 +298,12 @@ function rpg_levelup(player)
 	global.rpg_exp[player.name].level = global.rpg_exp[player.name].level + 1
 	
 	--Award bonuses
-	
 	--Update GUI
 	if player.connected then
 		player.gui.top.rpg.container.level.caption = "Level " .. global.rpg_exp[player.name].level
 		rpg_give_bonuses(player)
 	end
+	tag_refresh(player) --refreshes tag of a player
 end
 
 --Award bonuses
