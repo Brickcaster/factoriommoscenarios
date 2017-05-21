@@ -73,7 +73,7 @@ end
 -- leveling up
 function tag_refresh(player)
 	local class = global.rpg_exp[player.name].class --gets player class
-	if ()not class) or (class == "None")) then  --if he has no class then he is a spectator
+	if ((not class) or (class == "None")) then  --if he has no class then he is a spectator
 		class = "Spectator"
 	end
 	local new_tag = class.." - "..(global.rpg_exp[player.name].class.level or 1)  --concatenates player class and level (current level or 1) with "-" between
