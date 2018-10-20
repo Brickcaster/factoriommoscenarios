@@ -52,7 +52,7 @@ end
 
 function grid_ore_generate_resources(location)
 	if(math.random(global.grid_ore.resource_chance ) == 1) then
-		rndm = math.random(8)-1
+		rndm = math.random(10)-1
 		if(rndm < 1) then
 			grid_ore_place_ore_in_grid_chunck(location, "stone")
 		elseif (0 < rndm and rndm < 3) then
@@ -63,6 +63,8 @@ function grid_ore_generate_resources(location)
 			grid_ore_place_ore_in_grid_chunck(location, "coal")
 		elseif (5 < rndm and rndm < 7) then
 			grid_ore_place_oil_in_grid_chunck(location)
+		elseif (8 < rndm and rndm < 10) then
+			grid_ore_place_oil_in_grid_chunck(location, "uranium-ore")
 		end
 	end
 end
