@@ -2,8 +2,10 @@
 require "mod-gui" --Klonan's button prettifier
 Event = require "lib/event"
 require "utils/topgui" --Allows reordering guis.
+require "lualib/char_mod"	--utility module to prevent multiple modules conflicting when modifying player bonus
 require "utils/bot" --Discord integration
 require "utils/antigrief" --Look for suspicious behavior and report it to admins/log it.
+require "lualib/modular_tag/modular_tag" --Module to let players set a tag behind their names to improve teamwork, also allows other modules to get (and use) its canvas.
 require "utils/modular_admin/modular_admin" --FMMO admin tools 
 require "utils/modular_information/modular_information" --Info windows from FMMO
 require "modules/module_list" --Creates and displays a list of active modules on login.
