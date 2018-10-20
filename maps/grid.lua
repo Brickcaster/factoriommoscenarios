@@ -64,7 +64,7 @@ function grid_ore_generate_resources(location)
 		elseif (5 < rndm and rndm < 7) then
 			grid_ore_place_oil_in_grid_chunck(location)
 		elseif (8 < rndm and rndm < 10) then
-			grid_ore_place_oil_in_grid_chunck(location, "uranium-ore")
+			grid_ore_place_ore_in_grid_chunck(location, "uranium-ore")
 		end
 	end
 end
