@@ -20,7 +20,7 @@ end
 global.grid_ore = global.grid_ore or {}
 global.grid_ore.resource_chance = 40
 global.grid_ore.ore_start_amount = 225
-global.grid_ore.ore_random_addition_amount = 600
+global.grid_ore.ore_random_addition_amount = 450
 global.grid_ore.oil_start_amount = 100000
 global.grid_ore.oil_random_addition_amount = 200000
 global.grid_ore.oil_spout_chance = 1
@@ -29,27 +29,28 @@ global.grid_ore.oil_spout_chance = 1
 function grid_ore_place_ore_in_grid_chunck(location, ore)
 	xoffset = (math.floor(location.x/global.grid.size))*global.grid.size
 	yoffset = (math.floor(location.y/global.grid.size))*global.grid.size
-	local distance_factor = (math.floor(math.log(xoffset + yoffset)))
+	local distance_factor = math.log(math.max(math.abs(location.x/global.grid.size), math.abs(location.y/global.grid.size)))^2
 	local random_factor = distance_factor / 10
 	local ore_amount = 0
 	for y=global.grid.y_border_width,global.grid.size-1 do
 		for x=global.grid.x_border_width,global.grid.size-1 do
-			ore_amount = global.grid_ore.ore_start_amount + distance_factor + math.ceil(math.random(global.grid_ore.ore_random_addition_amount)*random_factor)
+			ore_amount = math.ceil((global.grid_ore.ore_start_amount * distance_factor) + (math.random(global.grid_ore.ore_random_addition_amount)*random_factor))
 			game.surfaces["nauvis"].create_entity({name=ore, amount=ore_amount, position={x+xoffset, y+yoffset}})
 		end
 	end
 end
 
 function grid_ore_place_oil_in_grid_chunck(location)
-	xoffset = (math.floor(location.x/global.grid.size))*global.grid.size*10
-	yoffset = (math.floor(location.y/global.grid.size))*global.grid.size*10
-	local distance_factor = (math.floor(math.log(xoffset + yoffset)))
-	local random_factor = distance_factor / 10
+	xoffset = (math.floor(location.x/global.grid.size))*global.grid.size
+	yoffset = (math.floor(location.y/global.grid.size))*global.grid.size
+	local distance_factor = math.log(math.max(math.abs(location.x/global.grid.size), math.abs(location.y/global.grid.size)))^2
+	local random_factor = distance_factor / 100
 	local oil_amount = 0
 	for y=global.grid.y_border_width,global.grid.size-1 do
 		for x=global.grid.x_border_width,global.grid.size-1 do
-			if math.random(100) <= global.grid_ore.oil_spout_chance then
-				oil_amount = global.grid_ore.oil_start_amount + distance_factor + math.ceil(math.random(global.grid_ore.oil_random_addition_amount)*random_factor)
+			if math.random(200) <= global.grid_ore.oil_spout_chance then
+				oil_amount = math.ceil((global.grid_ore.oil_start_amount * distance_factor) + (math.random(global.grid_ore.oil_random_addition_amount)*random_factor))
+				--game.write_file("oil.log", xoffset.. " " .. yoffset .. " " .. oil_amount .. " " .. x+xoffset.. "x" .. y+yoffset .. "\n", true)
 				game.surfaces["nauvis"].create_entity({name="crude-oil", amount=oil_amount, position={x+xoffset, y+yoffset}})
 			end
 		end
@@ -69,7 +70,7 @@ function grid_ore_generate_resources(location)
 			grid_ore_place_ore_in_grid_chunck(location, "coal")
 		elseif (5 < rndm and rndm < 7) then
 			grid_ore_place_oil_in_grid_chunck(location)
-		elseif (8 < rndm and rndm < 10) then
+		elseif (8 < rndm and rndm <= 9) then
 			grid_ore_place_ore_in_grid_chunck(location, "uranium-ore")
 		end
 	end
