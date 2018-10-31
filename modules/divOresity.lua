@@ -57,13 +57,5 @@ function diversify(event)
 	end
 end
 
-function get_sign(number)
-	if (number >= 0) then
-		return 1
-	else 
-		return -1
-	end
-end
-
 Event.register(defines.events.on_chunk_generated, diversify)
 Event.register('on_init', divOresity_init)
