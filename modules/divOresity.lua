@@ -27,7 +27,12 @@ function divOresity_init()
 end
 
 function diversify(event)
-	local ores = event.surface.find_entities_filtered{type="resource", area=event.area}
+	local ores = {}
+	if global.grid ~= nil then
+		ores = event.surface.find_entities_filtered({type="resource", area={{event.area.left_top.x - 32, event.area.left_top.y - 32},{event.area.right_bottom.x + 32, event.area.right_bottom.y + 32}}})
+	else 
+		ores = event.surface.find_entities_filtered({type="resource", area=event.area})
+	end
 	for k,v in pairs(ores) do
 		if math.abs(v.position.x) > EXEMPT_AREA or math.abs(v.position.y) > EXEMPT_AREA then
 			if v.prototype.resource_category == "basic-solid" then
@@ -49,6 +54,14 @@ function diversify(event)
 				end
 			end
 		end
+	end
+end
+
+function get_sign(number)
+	if (number >= 0) then
+		return 1
+	else 
+		return -1
 	end
 end
 
