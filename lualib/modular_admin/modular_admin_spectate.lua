@@ -303,7 +303,7 @@ Event.register(defines.events.on_player_left_game, modular_admin_spectate_connec
 Event.register(defines.events.on_player_joined_game, modular_admin_spectate_connected_players_changed)
 Event.register(defines.events.on_gui_click, modular_admin_spectate_gui_clicked)
 
-Event.register('on_init', function(event)
+Event.register(Event.core_events.init, function(event)
 		if(global.modular_admin_spectate.enabled) then
 			modular_admin_add_submodule("modular_admin_spectate")
 			if global.modular_admin_spectate.follow_enabled then

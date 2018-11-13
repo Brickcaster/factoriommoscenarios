@@ -29,7 +29,7 @@ global.grid_ore.oil_spout_chance = 1
 function grid_ore_place_ore_in_grid_chunck(location, ore)
 	xoffset = (math.floor(location.x/global.grid.size))*global.grid.size
 	yoffset = (math.floor(location.y/global.grid.size))*global.grid.size
-	local distance_factor = math.log(math.max(math.abs(location.x/global.grid.size), math.abs(location.y/global.grid.size)))^2
+	local distance_factor = math.log(math.max(math.abs(location.x/global.grid.size), math.abs(location.y/global.grid.size), 1.1))^2
 	local random_factor = distance_factor / 10
 	local ore_amount = 0
 	for y=global.grid.y_border_width,global.grid.size-1 do
@@ -43,14 +43,13 @@ end
 function grid_ore_place_oil_in_grid_chunck(location)
 	xoffset = (math.floor(location.x/global.grid.size))*global.grid.size
 	yoffset = (math.floor(location.y/global.grid.size))*global.grid.size
-	local distance_factor = math.log(math.max(math.abs(location.x/global.grid.size), math.abs(location.y/global.grid.size)))^2
-	local random_factor = distance_factor / 100
+	local distance_factor = math.log(math.max(math.abs(location.x/global.grid.size), math.abs(location.y/global.grid.size), 1.1))^2
+	local random_factor = distance_factor / 10
 	local oil_amount = 0
 	for y=global.grid.y_border_width,global.grid.size-1 do
 		for x=global.grid.x_border_width,global.grid.size-1 do
 			if math.random(200) <= global.grid_ore.oil_spout_chance then
 				oil_amount = math.ceil((global.grid_ore.oil_start_amount * distance_factor) + (math.random(global.grid_ore.oil_random_addition_amount)*random_factor))
-				--game.write_file("oil.log", xoffset.. " " .. yoffset .. " " .. oil_amount .. " " .. x+xoffset.. "x" .. y+yoffset .. "\n", true)
 				game.surfaces["nauvis"].create_entity({name="crude-oil", amount=oil_amount, position={x+xoffset, y+yoffset}})
 			end
 		end
@@ -59,18 +58,18 @@ end
 
 function grid_ore_generate_resources(location)
 	if(math.random(global.grid_ore.resource_chance ) == 1) then
-		rndm = math.random(10)-1
-		if(rndm < 1) then
+		rndm = math.random(13)-1
+		if(rndm <= 1) then
 			grid_ore_place_ore_in_grid_chunck(location, "stone")
-		elseif (0 < rndm and rndm < 3) then
+		elseif (rndm >= 2 and rndm <= 4) then
 			grid_ore_place_ore_in_grid_chunck(location, "iron-ore")
-		elseif (2 < rndm and rndm < 5) then
+		elseif (rndm >= 5 and rndm <= 7) then
 			grid_ore_place_ore_in_grid_chunck(location, "copper-ore")
-		elseif (4 < rndm and rndm < 6) then
+		elseif (rndm >= 8 and rndm <= 10) then
 			grid_ore_place_ore_in_grid_chunck(location, "coal")
-		elseif (5 < rndm and rndm < 7) then
+		elseif (rndm == 11) then
 			grid_ore_place_oil_in_grid_chunck(location)
-		elseif (8 < rndm and rndm <= 9) then
+		elseif (rndm == 12) then
 			grid_ore_place_ore_in_grid_chunck(location, "uranium-ore")
 		end
 	end
@@ -111,8 +110,9 @@ Event.register(defines.events.on_chunk_generated, function(event)
 end)
 
 Event.register(defines.events.on_player_created, function(event)
-	local p = game.players[event.player_index]
-	p.teleport({x = math.floor(global.grid.size/2), y = math.floor(global.grid.size/2)})
+    local p = game.players[event.player_index]
+    local surface = game.surfaces["nauvis"]
+	p.teleport(surface.find_non_colliding_position("player", {x = math.floor(global.grid.size/2), y = math.floor(global.grid.size/2)}, 3, 1))
 end)
 -- Event.register('on_init', function(event)
 	-- --global.grid_module.seed = normalize(os.time())
