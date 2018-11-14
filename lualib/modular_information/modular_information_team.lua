@@ -45,7 +45,7 @@ Event.register(defines.events.on_player_joined_game, function(event)
 	modular_information_team_create_gui(p)
 end)
 
-Event.register('on_init', function(event)
+Event.register(Event.core_events.init, function(event)
 	modular_information_enable_submodule("modular_information_team")
 end)
 

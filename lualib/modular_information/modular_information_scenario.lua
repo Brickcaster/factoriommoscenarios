@@ -71,7 +71,7 @@ Event.register(defines.events.on_player_joined_game, function(event)
 	modular_information_add_button(p.name, {name="modular_information_scenario", order = 1, caption = "Scenario"})
 end)
 
-Event.register('on_init', function(event)
+Event.register(Event.core_events.init, function(event)
 	modular_information_enable_submodule("modular_information_scenario")
 end)
 

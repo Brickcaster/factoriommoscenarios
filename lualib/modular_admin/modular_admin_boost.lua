@@ -157,7 +157,7 @@ function modular_admin_boost_gui_clicked(event)
 		if e.name == "modular_admin_boost_button" then
 			global.modular_admin_boost.visible[p.name] = (not global.modular_admin_boost.visible[p.name])
 			modular_admin_boost_update_menu_button(p)
-		elseif e.parent.name == "modular_admin_boost_pane" or e.parent.name == "modular_admin_boost_walking_table" or e.parent.name == "modular_admin_boost_flow" then
+		elseif e.parent ~= nil and (e.parent.name == "modular_admin_boost_pane" or e.parent.name == "modular_admin_boost_walking_table" or e.parent.name == "modular_admin_boost_flow") then
 			if e.name == "modular_admin_boost_pickup_button" then
 				if global.modular_admin_boost.bonus_state[p.name].pickup then
 					global.modular_admin_boost.bonus_state[p.name].pickup = false
@@ -274,7 +274,7 @@ Event.register(defines.events.on_player_joined_game, function(event)
 	end
 end)
 
-Event.register('on_init', function(event)
+Event.register(Event.core_events.init, function(event)
 	if(global.modular_admin_boost.enabled) then
 		modular_admin_add_submodule("modular_admin_boost")
 	else

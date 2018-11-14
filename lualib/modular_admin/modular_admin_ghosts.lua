@@ -110,7 +110,7 @@ Event.register(defines.events.on_tick, modular_admin_ghosts_chart)
 Event.register(defines.events.on_pre_player_mined_item, modular_admin_ghosts_entity_mined)
 Event.register(defines.events.on_robot_pre_mined, modular_admin_ghosts_entity_deconstructed)
 
-Event.register('on_init', function(event)
+Event.register(Event.core_events.init, function(event)
 	if(global.modular_admin_ghosts.enabled) then
 		modular_admin_add_submodule("modular_admin_ghosts")
 	else

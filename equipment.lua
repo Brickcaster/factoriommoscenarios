@@ -32,11 +32,7 @@ function player_joined(event)
 		player.insert { name = "stone-furnace", count = 2 }
 	end
 
-	if (player.force.technologies["steel-processing"].researched) then
-        player.insert { name = "steel-axe", count = 2 }
-    else
-        player.insert { name = "iron-axe", count = 5 }
-    end
+    player.insert { name = "steel-axe", count = 5 }
 end
 
 -- Give player weapons after they respawn.
@@ -44,6 +40,7 @@ end
 function player_respawned(event)
 	local player = game.players[event.player_index]
 
+	player.insert { name = "steel-axe", count = 5 }
 	give_player_fighting_equipment(player)
 end
 

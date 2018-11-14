@@ -1090,4 +1090,4 @@ Event.register(defines.events.on_pre_player_died, rpg_im_too_smart_to_die)
 --Event.register(defines.events.on_tick, rpg.heartbeat)
 --Event.register(defines.events.on_research_finished, rpg_nerf_tech)
 --Event.register(defines.events.on_tick, rpg_exp_tick) --For debug
-Event.register('on_init', rpg_init)
+Event.register(Event.core_events.init, rpg_init)
