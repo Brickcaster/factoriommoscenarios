@@ -26,11 +26,12 @@ rpg.on_rpg_gui_created = script.generate_event_name()
 
 --Savedata is of form: player_name = {bank = exp, class1 = exp, class2 = exp, etc}
 --Remote commands
-commands.add_command("heartbeat", "Regular heartbeat to let the game know that the character data server is online.", function()
-	for i = 1, 3 do
-		global.rpg.heartbeat[i] = true
-	end
-end)
+-- commands.add_command("heartbeat", "Regular heartbeat to let the game know that the character data server is online.", function()
+-- 	if game.player then return end
+-- 	for i = 1, 3 do
+-- 		global.rpg.heartbeat[i] = true
+-- 	end
+-- end)
 
 commands.add_command("loaddata", "Loads rpg data", function(data)
 	--Only the server is allowed to use this command

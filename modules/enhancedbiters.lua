@@ -6,18 +6,20 @@ if MODULE_LIST then
 	module_list_add("Enhanced Biters")
 end
 
-global.zombies = {}
-global.capsules = {}
+enhanced_biters = {}
+global.enhanced_biters = {}
+global.enhanced_biters.zombies = {}
+global.enhanced_biters.capsules = {}
 
 ENHANCED_SCALE = 1 --1 means 50% turret damage after 24h.  2 means 12h.
 
 --Unique behaviors
-function splitters(event)
+function enhanced_biters.splitters(event)
 	if event.entity.force.name ~= "enemy" then
 		return
 	end
-	if not global.zombies then
-		global.zombies = {}
+	if not global.enhanced_biters.zombies then
+		global.enhanced_biters.zombies = {}
 	end
 	
 	if string.find(event.entity.name, "behemoth") and string.find(event.entity.name, "spitter") and math.random() < 0.08 then
@@ -46,23 +48,23 @@ function splitters(event)
 			end
 		end
 		if not isonfire then
-			table.insert(global.zombies, {tick=game.tick, position=event.entity.position, surface=event.entity.surface, name=event.entity.name})
+			table.insert(global.enhanced_biters.zombies, {tick=game.tick, position=event.entity.position, surface=event.entity.surface, name=event.entity.name})
 		end
 	end
 	if string.find(event.entity.name, "big") and string.find(event.entity.name, "spitter") and math.random() < 0.2 then
 		if event.cause and event.cause.valid then
 			local capsule = event.entity.surface.create_entity{name="acid-projectile-purple", position=event.entity.position, speed=0.5, target=event.cause}
-			table.insert(global.capsules, {entity = capsule, target=event.cause, type="medium-biter", count=2})
+			table.insert(global.enhanced_biters.capsules, {entity = capsule, target=event.cause, type="medium-biter", count=2})
 		end
 	end
 end
 
-function delayed_spawn()
-	if not global.zombies then
-		global.zombies = {}
+function enhanced_biters.delayed_spawn()
+	if not global.enhanced_biters.zombies then
+		global.enhanced_biters.zombies = {}
 	end
-	for i = #global.zombies, 1, -1 do
-		local zombie = global.zombies[i]
+	for i = #global.enhanced_biters.zombies, 1, -1 do
+		local zombie = global.enhanced_biters.zombies[i]
 		if game.tick > zombie.tick + (60*60*2) then
 			local spawnPoint = zombie.surface.find_non_colliding_position("medium-biter", zombie.position, 10, 3)
 			local area = {{zombie.position.x - 2, zombie.position.y -2}, {zombie.position.x + 2, zombie.position.y + 2}}
@@ -73,11 +75,11 @@ function delayed_spawn()
 					corpse.destroy()
 				end
 			end
-			table.remove(global.zombies, i)
+			table.remove(global.enhanced_biters.zombies, i)
 		end
 	end
-	for i = #global.capsules, 1, -1 do
-		local capsule = global.capsules[i]
+	for i = #global.enhanced_biters.capsules, 1, -1 do
+		local capsule = global.enhanced_biters.capsules[i]
 		if not (capsule.entity and capsule.entity.valid) then --Projectile found its mark.
 			--game.print("Popping Capsule")
 			for n = 1, capsule.count do
@@ -88,12 +90,37 @@ function delayed_spawn()
 					end
 				end
 			end
-			table.remove(global.capsules, i)
+			table.remove(global.enhanced_biters.capsules, i)
 		end
 	end
 end
 
-function tech_nerf(event)
+-- Test if biter should be a reflect biter.  If so, mayhem.
+-- 25% chance
+function enhanced_biters.reflect(event)
+	if not (event.entity.force.name == "enemy")
+	or not (event.entity.unit_number and event.entity.unit_number % 4 == 0)
+	or not (event.entity.name == "small-biter" and event.damage_type.name == "physical")
+	and not (event.entity.name == "big-biter" and event.damage_type.name == "laser") then return end
+
+	--game.print("Reflecting")
+	local type = "shotgun-pellet"
+	local target
+	if event.damage_type.name == "laser" then
+		type = "laser"
+	end
+
+	if event.cause then
+		target = {event.cause.position.x + math.random(-4, 4), event.cause.position.y + math.random(-4, 4)}
+	else
+		target = {event.entity.position.x + math.random(-10, 10), event.entity.position.y + math.random(-10, 10)}
+	end
+
+	event.entity.surface.create_entity{name=type, position=event.entity.position, target=target, speed = 1, max_range=40}
+
+end
+
+function enhanced_biters.tech_nerf(event)
 	local force = event.force
 	local scale = 5184000 / ENHANCED_SCALE
 	local factor = scale / (scale + game.tick) --Decrease by 50% per 12h.
@@ -108,7 +135,8 @@ end
 
 --Currently we rely upon the RPG module to call this often.
 if rpg then
-	Event.register(rpg.on_reset_technology_effects, tech_nerf)
+	Event.register(rpg.on_reset_technology_effects, enhanced_biters.tech_nerf)
 end
-Event.register(defines.events.on_entity_died, splitters)
-Event.register(defines.events.on_tick, delayed_spawn)
+Event.register(defines.events.on_entity_damaged, enhanced_biters.reflect)
+Event.register(defines.events.on_entity_died, enhanced_biters.splitters)
+Event.register(defines.events.on_tick, enhanced_biters.delayed_spawn)

@@ -39,7 +39,7 @@ commands.add_command("votekick", "Usage: /votekick <player>", function(params)
     end
     --Check for duplicate votes
     local duplicate = false
-    for k, v in pairs(global.votekick[name][game.player.name]) do
+    for k, v in pairs(global.votekick[name]) do
         if v == game.player.name then
             duplicate = true
             break

@@ -298,6 +298,7 @@ Event.register(defines.events.on_player_joined_game, function(event)
 			end
 		end
 	modular_information_get_information_pane(p)
+	p.opened = modular_information_get_flow(p)
 end)
 
 Event.register(defines.events.on_gui_click, modular_information_gui_clicked)

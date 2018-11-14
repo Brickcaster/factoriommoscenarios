@@ -25,7 +25,7 @@ local Event = {
         init_and_config = {'on_init', 'on_configuration_changed'}
     },
     custom_events = {}, -- Holds custom event ids
-    protected_mode = false,
+    protected_mode = true,
     inspect_event = false,
     inspect_append = false, -- Only used for write_file, can cause desyncs elsewhere
     force_crc = false,
@@ -274,7 +274,7 @@ local function dispatch_event(event, registered, protected)
     -- If the handler errors lets make sure someone notices
     if not success and not Event.log_and_print(handler_result or match_result) then
         -- no players received the message, force a real error so someone notices
-        error(handler_result or match_result)
+        -- error(handler_result or match_result)
     end
 
     return success and handler_result or nil
